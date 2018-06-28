@@ -2,6 +2,8 @@ package com.example.selzerai.flickster;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -37,16 +39,31 @@ public class MovieListActivity extends AppCompatActivity {
     String posterSize;
 
     // the lsit of current movies
-
     ArrayList<Movie> movies;
+
+    // the recycler view
+    RecyclerView rvMovies;
+
+    //the adapter wired to recycler view
+    MovieAdapter adapter;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_list);
+        //initializes objects
         client = new AsyncHttpClient();
         movies = new ArrayList<>();
+        adapter = new MovieAdapter(movies);
+
+        // resolves recycler view
+        rvMovies = (RecyclerView) findViewById(R.id.rvMovies);
+        // connects layout manager to adapter
+        rvMovies.setLayoutManager(new LinearLayoutManager(this));
+        rvMovies.setAdapter(adapter);
+
         getConfiguration();
 
     }
@@ -62,9 +79,13 @@ public class MovieListActivity extends AppCompatActivity {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
                     JSONArray results = response.getJSONArray("results");
+                    // iterates through list and creates movie objects
                     for (int i = 0; i < results.length(); i++){
                         Movie movie = new Movie(results.getJSONObject(i));
                         movies.add(movie);
+
+                        // notify adapter that row was changed
+                        adapter.notifyItemInserted(movies.size() -1);
                     }
                     Log.i(TAG, String.format("Loaded %s movies", results.length()));
                 } catch (JSONException e) {
