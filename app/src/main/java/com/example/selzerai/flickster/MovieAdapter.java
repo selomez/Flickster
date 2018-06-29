@@ -8,22 +8,37 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.selzerai.flickster.models.Config;
 import com.example.selzerai.flickster.models.Movie;
 
 import java.util.ArrayList;
 
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
+
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
 
     ArrayList<Movie> movies;
+    // config needed for image urls
+    Config config;
+    // context for rendering
+    Context context;
 
     public MovieAdapter(ArrayList<Movie> movies){
         this.movies = movies;
     }
 
+    public Config getConfig(){
+        return config;
+    }
+
+    public void setConfig(Config config){
+        this.config = config;
+    }
+
    // creates a new view
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
+        context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         View movieView = inflater.inflate(R.layout.item_movie, parent, false);
         return new ViewHolder(movieView);
@@ -37,7 +52,16 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
         holder.tvTitle.setText(movie.getTitle());
         holder.tvOverview.setText(movie.getOverview());
 
-        //TODO -set image
+        // build url for image
+        String imageUrl = config.getImageUrl(config.getPosterSize(), movie.getPosterPath());
+
+        GlideApp.with(context)
+                .load(imageUrl)
+                .transform(new RoundedCornersTransformation(20, 5))
+                .placeholder(R.drawable.flicks_placeholder)
+                .error(R.drawable.flicks_placeholder)
+                .into(holder.ivPosterImage);
+
     }
 
     // retirms the total number of items in the list

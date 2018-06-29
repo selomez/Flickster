@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.selzerai.flickster.models.Config;
 import com.example.selzerai.flickster.models.Movie;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -47,19 +48,22 @@ public class MovieListActivity extends AppCompatActivity {
     //the adapter wired to recycler view
     MovieAdapter adapter;
 
+    // image config
+    Config config;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_list);
+
         //initializes objects
         client = new AsyncHttpClient();
         movies = new ArrayList<>();
         adapter = new MovieAdapter(movies);
 
         // resolves recycler view
-        rvMovies = (RecyclerView) findViewById(R.id.rvMovies);
+        rvMovies = findViewById(R.id.rvMovies);
         // connects layout manager to adapter
         rvMovies.setLayoutManager(new LinearLayoutManager(this));
         rvMovies.setAdapter(adapter);
@@ -96,7 +100,7 @@ public class MovieListActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                logError("Failed to get data from now playing nendpoint", throwable, true);
+                logError("Failed to get data from now playing endpoint", throwable, true);
             }
         });
 
@@ -110,11 +114,12 @@ public class MovieListActivity extends AppCompatActivity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
-                    JSONObject images = response.getJSONObject("images");
-                    imageBaseUrl = images.getString("secure_base_url");
-                    JSONArray posterSizeOptions = images.getJSONArray("poster_sizes");
-                    posterSize = posterSizeOptions.optString(3, "w342");
-                    Log.i(TAG, String.format("Loaded configuration with imageBaseUrl %s and posterSize %s ", imageBaseUrl, posterSize));
+                    config = new Config(response);
+                    Log.i(TAG,
+                            String.format("Loaded configuration with imageBaseUrl %s and posterSize %s ",
+                                    config.getImageBaseUrl(),
+                                    config.getPosterSize()));
+                    adapter.setConfig(config);
                     getNowPlaying();
                 } catch (JSONException e) {
                     logError("Failed parsing configuration", e, true);
