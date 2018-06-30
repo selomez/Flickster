@@ -22,7 +22,7 @@
         android:layout_width="294dp"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/ivPosterImage"
+        android:layout_toEndOf="@+id/ivPosterImage" 
         android:layout_toRightOf="@+id/ivPosterImage"
         android:text="Movie Title"
         android:textColor="@color/white"
