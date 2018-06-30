@@ -1,6 +1,7 @@
 package com.example.selzerai.flickster;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,15 +53,27 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
         holder.tvTitle.setText(movie.getTitle());
         holder.tvOverview.setText(movie.getOverview());
 
+        boolean isPortrait = context.getResources().getConfiguration().orientation== Configuration.ORIENTATION_PORTRAIT;
+
         // build url for image
-        String imageUrl = config.getImageUrl(config.getPosterSize(), movie.getPosterPath());
+        String imageUrl = null;
+
+        if (isPortrait){
+            imageUrl = config.getImageUrl(config.getPosterSize(), movie.getPosterPath());
+        }else{
+            imageUrl = config.getImageUrl(config.getBackdropSize(), movie.getBackdropPath());
+        }
+
+        int plceholderId = isPortrait ? R.drawable.flicks_placeholder : R.drawable.backdrop_placeholder;
+        ImageView imageView = isPortrait ? holder.ivPosterImage : holder.ivBackdropImage;
+
 
         GlideApp.with(context)
                 .load(imageUrl)
                 .transform(new RoundedCornersTransformation(20, 5))
-                .placeholder(R.drawable.flicks_placeholder)
-                .error(R.drawable.flicks_placeholder)
-                .into(holder.ivPosterImage);
+                .placeholder(plceholderId)
+                .error(plceholderId)
+                .into(imageView);
 
     }
 
@@ -72,12 +85,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
         ImageView ivPosterImage;
+        ImageView ivBackdropImage;
         TextView tvTitle;
         TextView tvOverview;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ivPosterImage = (ImageView) itemView.findViewById(R.id.ivPosterImage);
+            ivBackdropImage = (ImageView) itemView.findViewById(R.id.ivBackdrop);
             tvOverview= (TextView) itemView.findViewById(R.id.tvOverview);
             tvTitle = (TextView) itemView.findViewById(R.id.tvTitle);
 

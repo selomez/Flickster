@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_margin = "5dp"
+    android:layout_margin="0.5dp"
     android:layout_width="match_parent" android:layout_height="wrap_content"
     android:background="@color/colorPrimaryDark">
 
@@ -25,17 +25,28 @@
         android:layout_toEndOf="@+id/ivPosterImage"
         android:layout_toRightOf="@+id/ivPosterImage"
         android:text="Movie Title"
+        android:textColor="@color/white"
+        android:paddingBottom="10dp"
+        android:paddingTop="20dp"
+        android:textStyle="bold"
         android:background="@color/colorPrimaryDark"
         android:paddingLeft="3dp"
+        android:paddingRight="3dp"
+        android:textSize="16sp"
         android:textAppearance="@android:style/TextAppearance.Large" />
 
     <TextView
         android:id="@+id/tvOverview"
         android:layout_width="294dp"
-        android:layout_height="102dp"
+        android:layout_height="68dp"
         android:layout_below="@+id/tvTitle"
         android:layout_toEndOf="@+id/ivPosterImage"
         android:layout_toRightOf="@+id/ivPosterImage"
         android:background="@color/colorPrimaryDark"
-        android:text="TextView" />
+        android:ellipsize="end"
+        android:maxLines="4"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp"
+        android:text="TextView"
+        android:textSize="12sp" />
 </RelativeLayout>
